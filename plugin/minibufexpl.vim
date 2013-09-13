@@ -521,7 +521,12 @@ function! <SID>BufDeleteHandler()
       resize
       exec 'noautocmd sb'.s:BufList[0]
       call <SID>StopExplorer(0)
-      call <SID>StartExplorer(bufnr("%"))
+
+
+      if g:miniBufExplAutoStart && t:miniBufExplAutoUpdate == 1
+            \ && (t:skipEligibleBuffersCheck == 1 || <SID>HasEligibleBuffers() == 1)
+        call <SID>StartExplorer(bufnr("%"))
+      endif
     else
       close
     endif
@@ -1008,7 +1013,7 @@ function! <SID>CreateWindow(bufName, vSplit, brSplit, forceEdge, isPluginWindow,
     setlocal noswapfile
     setlocal nobuflisted
     setlocal buftype=nofile
-    setlocal bufhidden=delete
+    setlocal bufhidden=wipe
   endif
 
   " Canculate the correct window number, for those whose window
